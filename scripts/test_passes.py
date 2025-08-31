@@ -39,13 +39,7 @@ PASS_CONFIG = {
             "simplifycfg)"
         ),
     },
-    # Примеры других профилей — при необходимости раскомментируй/добавь:
-    # "MyPass":         {"plugin": "libTestPasses.so", "mode": "new", "pipeline": "MyPass"},
-    # "RPOPass":        {"plugin": "libTestPasses.so", "mode": "new", "pipeline": "RPOPass"},
-    # "InstSearchPass": {"plugin": "libTestPasses.so", "mode": "new", "pipeline": "InstSearchPass"},
 }
-
-# ----------------- ВСПОМОГАТЕЛЬНЫЕ -----------------
 
 def cprint(msg):  # короткий принтер без раскраски
     print(msg)
@@ -101,7 +95,7 @@ def _output_stem_from_input_stem(input_stem: str) -> str:
 # ----------------- ЭТАПЫ КОМПИЛЯЦИИ/ОПТИМИЗАЦИИ -----------------
 
 def compile_to_ir(src_file: Path) -> Path:
-    """Компилирует C/C++ → LLVM IR (.ll) в build/ir/<name>.ll"""
+    """Компилирует C/C++ -> LLVM IR (.ll) в build/ir/<name>.ll"""
     ensure_dirs()
     compiler = _pick_compiler(src_file)
     out_ll = IR_DIR / (src_file.stem + ".ll")
@@ -157,7 +151,6 @@ def run_opt_to_file(ir_in: Path, pass_name: str, ir_out: Path) -> float:
         )
     return elapsed_ms
 
-# ----------------- БАЗА И СРАВНЕНИЕ -----------------
 
 def baseline_path(pass_name: str, src_file: Path) -> Path:
     """Путь к эталону .ll: results/<pass>/<stem_output>.ll"""
@@ -179,7 +172,6 @@ def compare_text(actual: str, expected: str):
         return False, f"Extra output starting at line {len(e)+1}: {a[len(e)]}\n"
     return True, ""
 
-# ----------------- ОСНОВНАЯ ЛОГИКА -----------------
 
 def run_single(pass_name: str, filename: str, keep: bool = False) -> bool:
     src = _resolve_src(filename)
@@ -187,7 +179,7 @@ def run_single(pass_name: str, filename: str, keep: bool = False) -> bool:
         cprint(f"✖ Source not found: {src}")
         return False
 
-    # 1) C/C++ → IR
+    # 1) C/C++ -> IR
     try:
         ir_in = compile_to_ir(src)
     except Exception as e:
